@@ -1,0 +1,19 @@
+---
+nextcloud_aio_enabled: false
+nextcloud_aio_available_externally: false
+
+# directories
+nextcloud_aio_data_directory: "{{ docker_home }}/nextcloud"
+
+# images
+nextcloud_aio_image: "nextcloud/all-in-one:latest"
+
+# network
+nextcloud_aio_port0: "80"
+nextcloud_aio_port1: "8080"
+nextcloud_aio_port2: "8433"
+nextcloud_aio_hostname: "nextcloud"
+
+# specs
+nextcloud_aio_memory: 1g
+nextcloud_aio_mysql_memory: 1g

@@ -1,0 +1,42 @@
+---
+- name: Create Nextcloud directories
+  file:
+    path: "{{ item }}"
+    state: directory
+  with_items:
+    - "{{ nextcloud_aio_data_directory }}/config"
+    - "{{ nextcloud_aio_data_directory }}/data"
+
+- name: Nextcloud Docker Container
+  docker_container:
+    name: nextcloud-aio-mastercontainer
+    image: "{{ nextcloud_aio_image }}"
+    pull: true
+    volumes:
+      - "{{ nextcloud_aio_data_directory }}/config:/mnt/docker-aio-config"
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+    ports:
+      - "{{ nextcloud_aio_port0 }}:80"
+      - "{{ nextcloud_aio_port1 }}:8080"
+      - "{{ nextcloud_aio_port2 }}:8443"
+    env:
+      nextcloud_aio_TRUSTED_DOMAINS: "{{ nextcloud_aio_hostname }}.{{ ansible_nas_domain }}"
+      NEXTCLOUD_DATADIR: "{{ nextcloud_aio_data_directory }}/data"
+    restart_policy: unless-stopped
+    memory: "{{ nextcloud_aio_memory }}"
+    labels:
+      traefik.enable: "{{ nextcloud_aio_available_externally | string }}"
+      traefik.http.routers.nextcloud.rule: "Host(`{{ nextcloud_aio_hostname }}.{{ ansible_nas_domain }}`)"
+      traefik.http.routers.nextcloud.tls.certresolver: "letsencrypt"
+      traefik.http.routers.nextcloud.tls.domains[0].main: "{{ ansible_nas_domain }}"
+      traefik.http.routers.nextcloud.tls.domains[0].sans: "*.{{ ansible_nas_domain }}"
+      traefik.http.services.nextcloud.loadbalancer.server.port: "80"
+
+# abemat: Used ansible-nas nextcloud folder as template and copied configuration from
+# https://github.com/nextcloud/all-in-one
+
+# abemat: not sure how to embed sig-proxy in this file
+# sudo docker run \
+# --init \
+# --sig-proxy=false \
+# --name  \
