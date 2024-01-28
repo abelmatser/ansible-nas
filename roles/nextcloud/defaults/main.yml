@@ -4,6 +4,7 @@ nextcloud_available_externally: false
 
 # directories
 nextcloud_data_directory: "{{ docker_home }}/nextcloud"
+nextcloud_external_data_directory: "{{ docker_home }}/nextcloud_data"
 
 # images
 nextcloud_image: "nextcloud:stable"
