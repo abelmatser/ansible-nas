@@ -1,0 +1,18 @@
+---
+- name: Add ansible_nas_user ({{ ansible_nas_user }}) to ansible-nas group to access Samba files
+  user:
+    name: "{{ ansible_nas_user }}"
+    state: present
+    append: true # configured `groups` will be appended instead of replaced
+    groups: ansible-nas
+
+- name: Create Samba-only users
+  user:
+    name: "{{ item.name }}"
+    state: present
+    system: yes
+    update_password: on_create
+    create_home: no
+    group: ansible-nas
+    shell: /usr/sbin/nologin
+  with_items: "{{ ansible_nas_samba_users }}"

@@ -10,6 +10,11 @@
         - ansible-nas-users
         - ansible-nas
 
+    - role: ansible-nas-samba-users
+      tags:
+        - ansible-nas-users
+        - samba
+
     - role: bertvv.samba
       tags:
         - samba

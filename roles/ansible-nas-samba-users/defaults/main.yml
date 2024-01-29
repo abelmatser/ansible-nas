@@ -1,0 +1,6 @@
+---
+ansible_nas_samba_users: []
+
+# ansible_nas_samba_users:
+#   - name: user1
+#   - name: user2
