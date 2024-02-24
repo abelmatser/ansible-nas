@@ -56,5 +56,18 @@
     /bin/bash -c "apt update && apt install -y {{ packages | join(' ') }}"
   vars:
     packages:
-      - samba-client
-      - ffmpeg
+      - ffmpeg # suggested by Memories for videos
+      # - bz2 # suggest by Nextcloud for PHP performance - disabled since not found
+      - smbclient # to use External Storage
+      # to use External Storage additional installs: https://github.com/nextcloud/server/issues/41114#issuecomment-1779285038
+      - libsmbclient
+      - libsmbclient-dev # find libsmbclient.h
+      # - samba-dev (maybe required)
+
+- name: Enable Samba elements in PHP in Nextcloud container
+  become: true
+  raw: |
+    docker exec -it nextcloud \
+    /bin/bash -c "pecl install smbclient && docker-php-ext-enable smbclient"
+
+
