@@ -57,17 +57,18 @@
   vars:
     packages:
       - ffmpeg # suggested by Memories for videos
-      # - bz2 # suggest by Nextcloud for PHP performance - disabled since not found
-      - smbclient # to use External Storage
+      - libbz2-dev # bz2 suggested by Nextcloud for PHP performance
+      - procps # See example: https://github.com/nextcloud/docker/blob/master/.examples/dockerfiles/full/apache/Dockerfile
       # to use External Storage additional installs: https://github.com/nextcloud/server/issues/41114#issuecomment-1779285038
       - libsmbclient
       - libsmbclient-dev # find libsmbclient.h
       # - samba-dev (maybe required)
 
+# only run once, after disable manually
 - name: Enable Samba elements in PHP in Nextcloud container
   become: true
   raw: |
     docker exec -it nextcloud \
-    /bin/bash -c "pecl install smbclient && docker-php-ext-enable smbclient"
+    /bin/bash -c "pecl install smbclient || echo 'smbclient already installed, skipping' && docker-php-ext-enable smbclient && docker-php-ext-install bz2"
 
 
